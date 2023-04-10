@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Theme CSS -->
+    <link type="text/css" href="/kit/assets/css/theme.css" rel="stylesheet">
+    <link type="text/css" href="/kit/assets/css/demo.css" rel="stylesheet">
+    <title>新学橙-实训项目</title>
+  </head>
+  <body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary rounded">
+    <a class="navbar-brand" href="/"><strong>新学橙</strong> 投票系统</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar_example_1" aria-controls="navbar_example_1" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbar_example_1">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item dropdown">
+          <a class="nav-link nav-link-icon" href="#" id="navbar_1_dropdown_3" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user"></i></a>
+          <div class="dropdown-menu dropdown-menu-right">
+            <a class="dropdown-item" href="/logout">
+              <i class="fas fa-sign-out-alt text-primary"></i>退出登录
+            </a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <main class="main">
+    <section class="slice slice-lg">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-10">
+            <div class="row align-items-center mb-4">
+              <div class="col-8">
+                <h2 class="heading h3 mb-0">用户：{{.name}}</h2>
+              </div>
+            </div>
+          </div>
+
+          <table class="table table-hover align-items-center">
+            <thead>
+            <tr>
+              <th scope="col">标题</th>
+              <th scope="col">类型</th>
+              <th scope="col">持续时间（秒）</th>
+              <th scope="col">总投票数</th>
+              <th scope="col">操作</th>
+            </tr>
+            </thead>
+            <tbody id="table-tbody">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="/kit/assets/vendor/jquery/jquery.min.js"></script>
+  <script src="/kit/assets/js/bootstrap/bootstrap.min.js"></script>
+  <!-- FontAwesome 5 -->
+  <script>
+    $(document).ready(function(){
+      getTableData()
+    });
+    function buildTable(data) {
+      var divElement = $('<tr class="bg-white" scope="row"></tr>')
+      var td1 = '<td><div class="media align-items-center"><span class="avatar avatar-lg bg-pink mr-3">VT</span><div class="media-body"><h6 class="h5 font-weight-normal mb-0">'+data.title+'</h6></div></div></td>';
+      $(divElement).append(td1);
+      var td2 = $("<td></td>").text("类型为："+data.type)
+      $(divElement).append(td2);
+      var td3 = $("<td></td>").text(data.during)
+      $(divElement).append(td3);
+      var td4 = $("<td></td>").text(data.count)
+      $(divElement).append(td4);
+      var td5 = '<td><a href="/info?id='+data.id+'" class="btn btn-sm btn-primary btn-label">查看详情</a></td>'
+      $(divElement).append(td5);
+      $('#table-tbody').append(divElement);
+    }
+    function getTableData(){
+      $.ajax({
+        //请求资源路径
+        url:"/votes",
+        //请求方式
+        type:"get",
+        //数据形式
+        dataType:"json",
+        //请求成功后调用的回调函数
+        success:function (data) {
+          console.log(data)
+          for (const datum of data.data) {
+            buildTable(datum)
+          }
+        },
+        //请求失败后调用的回调函数
+        error:function () {
+          commonUtil.message("服务器错误，请稍后再试","danger",".container")
+        }
+      });
+    }
+  </script>
+  </body>
+</html>

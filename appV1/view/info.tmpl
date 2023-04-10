@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Theme CSS -->
+    <link type="text/css" href="/kit/assets/css/theme.css" rel="stylesheet">
+    <link type="text/css" href="/kit/assets/css/demo.css" rel="stylesheet">
+    <title>新学橙-实训项目</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary rounded">
+    <a class="navbar-brand" href="/"><strong>新学橙</strong> 投票系统</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar_example_1" aria-controls="navbar_example_1" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbar_example_1">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+            </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item dropdown">
+                <a class="nav-link nav-link-icon" href="#" id="navbar_1_dropdown_3" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user"></i></a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="/logout">
+                        <i class="fas fa-sign-out-alt text-primary"></i>退出登录
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+<main class="main">
+    <section class="slice slice-lg">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="row align-items-center mb-4">
+                        <div class="col-8">
+                            <h2 class="heading h3 mb-0">用户：{{.name}}</h2>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="row align-items-center mb-4">
+                            <div class="col-8">
+                                <h2 class="heading h3 mb-0">{{.vote.Title}}（ {{ if eq .vote.Type 1}} 多选 {{ else }} 单选 {{ end }}）</h2>
+                            </div>
+                        </div>
+                        <p class="mb-5">
+                            有效期： {{.vote.During}} 秒
+                        </p>
+                        <div class="row-wrapper">
+                            <div class="row cols-xs-space cols-sm-space cols-md-space">
+                                <div class="col-lg-6">
+                                    <div class="row cols-xs-space cols-sm-space cols-md-space">
+                                        <form class="form-primary">
+                                            <input type="text" id="form-vote-id" class="custom-control-input" value="{{.vote.Id}}">
+                                            <div class="col-md-6">
+                                                {{range $key,$value := .vote.VoteOpt}}
+                                                <div class="custom-control custom-checkbox mb-3">
+                                                    <input type="checkbox" name="opt[]" class="custom-control-input" id="customCheck{{$key}}" value="{{$value.Id}}">
+                                                    <label class="custom-control-label" for="customCheck{{$key}}">{{$value.Name}}</label>
+                                                </div>
+                                                {{end}}
+                                            </div>
+                                            <button type="button" id="do-vote" class="btn btn-block btn-primary btn-lg mt-4">Submit</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="slice slice-lg">
+        <div class="container">
+            <div id="result" class="row justify-content-center" style="display: none;">
+                <div class="col-lg-10">
+                    <div class="row align-items-center mb-4">
+                        <div class="col-8">
+                            <h2 class="heading h3 mb-0">投票结果</h2>
+                        </div>
+                    </div>
+                    <div class="row-wrapper">
+                        <div class="row cols-xs-space cols-sm-space cols-md-space">
+                            <div class="col-lg-12">
+                                <div class="row cols-xs-space cols-sm-space cols-md-space">
+                                    <div class="col-md-12" id="result-line">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<script src="/kit/assets/vendor/jquery/jquery.min.js"></script>
+<script src="/kit/assets/js/bootstrap/bootstrap.min.js"></script>
+<!-- FontAwesome 5 -->
+<script>
+    $(document).ready(function(){
+        $("#do-vote").on("click",function (){
+            var arr = new Array();
+            $("input:checkbox[name='opt[]']:checked").each(function() {
+                arr.push($(this).val()); //向数组中添加元素
+            });
+            $.ajax({
+                //请求资源路径
+                url:"/vote",
+                //请求方式
+                type:"post",
+                //数据形式
+                data:{
+                    "vote_id":$("#form-vote-id").val(),
+                    "opt":arr,
+                },
+                dataType:"json",
+                //请求成功后调用的回调函数
+                success:function (data) {
+                    console.log(data)
+                    $("#result-line").empty();
+                    for (const datum of data.data.vote_opt) {
+                        buildResult(datum)
+                    }
+                    $("#result").css('display','block');
+                },
+                //请求失败后调用的回调函数
+                error:function () {
+                    commonUtil.message("服务器错误，请稍后再试","danger",".container")
+                }
+            });
+        });
+
+    });
+
+    function buildResult(data){
+        var tr = '<div class="progress-wrapper">' +
+            '<h4 class="progress-label">'+data.name+'</h4>' +
+            '<h4 class="progress-percentage text-uppercase">'+data.percent+'%</h4>' +
+            '<div class="progress" style="height: 10px;">' +
+            '<div class="progress-bar bg-purple" role="progressbar" aria-valuenow="'+data.percent+'" aria-valuemin="0" aria-valuemax="100" style="width: '+data.percent+'%;"></div>\n' +
+            '</div>' +
+            '</div>'
+
+        $("#result-line").append(tr);
+    }
+</script>
+</body>
+</html>
