@@ -14,8 +14,10 @@ func New() {
 	conn, err := gorm.Open("mysql", my)
 	if err != nil {
 		fmt.Printf("err:%s\n", err)
+		panic(err)
 	}
 	GlobalConn = conn
+	GlobalConn.AutoMigrate(&Vote{}, &VoteOpt{})
 }
 
 func Close() {
@@ -62,4 +64,5 @@ func Close() {
 //`created_time` datetime DEFAULT NULL,
 //`during` int DEFAULT NULL,
 //PRIMARY KEY (`id`),
+//CONSTRAINT `id` FOREIGN KEY (`id`) REFERENCES `vote_opt` (`vote_id`)
 //) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;

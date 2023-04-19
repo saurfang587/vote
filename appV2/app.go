@@ -1,16 +1,16 @@
-package appV0
+package appV2
 
 import (
-	"saurfang/vote/appV0/model"
-	"saurfang/vote/appV0/router"
+	"saurfang/vote/appV2/model"
+	"saurfang/vote/appV2/router"
 )
 
 func Start() {
-	model.New()
 	defer func() {
 		model.Close()
 	}()
 
+	model.New()
 	r := router.New()
 	_ = r.Run(":8080")
 }
