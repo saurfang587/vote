@@ -1,0 +1,349 @@
+basePath: /
+definitions:
+  saurfang_vote_appV2_model.Vote:
+    properties:
+      count:
+        type: integer
+      created_time:
+        type: string
+      during:
+        type: integer
+      id:
+        type: integer
+      start_time:
+        type: integer
+      title:
+        type: string
+      type:
+        type: integer
+      user_id:
+        type: integer
+      vote_opt:
+        items:
+          $ref: '#/definitions/saurfang_vote_appV2_model.VoteOpt'
+        type: array
+    type: object
+  saurfang_vote_appV2_model.VoteOpt:
+    properties:
+      count:
+        type: integer
+      created_time:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      percent:
+        type: integer
+      vote_id:
+        type: integer
+    type: object
+  saurfang_vote_appV2_tools.HttpCode:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: 该项目为香香编程喵喵喵创建的新人入门指引项目，旨在提高新手的编程手感和熟练度，并对常用工具和组件有一个基础的认识
+  title: 简易投票项目API
+  version: "1.0"
+paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: 会执行用户登录操作
+      parameters:
+      - description: 用户名
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: 密码
+        in: formData
+        name: pwd
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/saurfang_vote_appV2_tools.HttpCode'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/saurfang_vote_appV2_tools.HttpCode'
+      summary: 用户登录
+      tags:
+      - user
+  /logout:
+    get:
+      consumes:
+      - application/json
+      description: 会执行用户退出操作
+      produces:
+      - application/json
+      responses:
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/saurfang_vote_appV2_tools.HttpCode'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/saurfang_vote_appV2_tools.HttpCode'
+      summary: 用户退出
+      tags:
+      - user
+  /vote/:id:
+    delete:
+      consumes:
+      - application/json
+      description: 根据ID删除投票的主体
+      parameters:
+      - description: int valid
+        in: path
+        minimum: 1
+        name: id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/saurfang_vote_appV2_tools.HttpCode'
+            - properties:
+                data:
+                  $ref: '#/definitions/saurfang_vote_appV2_model.Vote'
+              type: object
+        "404":
+          description: Not Found
+          schema:
+            allOf:
+            - $ref: '#/definitions/saurfang_vote_appV2_tools.HttpCode'
+            - properties:
+                data:
+                  $ref: '#/definitions/saurfang_vote_appV2_model.Vote'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/saurfang_vote_appV2_tools.HttpCode'
+            - properties:
+                data:
+                  $ref: '#/definitions/saurfang_vote_appV2_model.Vote'
+              type: object
+      summary: 删除投票主体
+      tags:
+      - vote
+    get:
+      consumes:
+      - application/json
+      description: 根据ID获取某个用户的投票详情
+      parameters:
+      - description: int valid
+        in: path
+        minimum: 1
+        name: id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/saurfang_vote_appV2_tools.HttpCode'
+            - properties:
+                data:
+                  $ref: '#/definitions/saurfang_vote_appV2_model.Vote'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/saurfang_vote_appV2_tools.HttpCode'
+            - properties:
+                data:
+                  $ref: '#/definitions/saurfang_vote_appV2_model.Vote'
+              type: object
+      summary: 获取投票详情
+      tags:
+      - vote
+  /vote/basic:
+    post:
+      consumes:
+      - application/json
+      description: 新增加投票的主体
+      parameters:
+      - description: 投票主题
+        in: body
+        name: title
+        schema:
+          type: string
+      - description: 开始时间 时间戳
+        in: body
+        name: start_time
+        schema:
+          type: integer
+      - description: 类型 0单选  1多选
+        in: body
+        name: type
+        schema:
+          type: integer
+      - description: 持续时间 秒
+        in: body
+        name: during
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/saurfang_vote_appV2_tools.HttpCode'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/saurfang_vote_appV2_tools.HttpCode'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/saurfang_vote_appV2_tools.HttpCode'
+      summary: 新增投票主体
+      tags:
+      - vote
+    put:
+      consumes:
+      - application/json
+      description: 更新投票的主体
+      parameters:
+      - description: 投票主题ID
+        in: body
+        name: id
+        schema:
+          type: integer
+      - description: 投票主题
+        in: body
+        name: title
+        schema:
+          type: string
+      - description: 开始时间 时间戳
+        in: body
+        name: start_time
+        schema:
+          type: integer
+      - description: 类型 0单选  1多选
+        in: body
+        name: type
+        schema:
+          type: integer
+      - description: 持续时间 秒
+        in: body
+        name: during
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/saurfang_vote_appV2_tools.HttpCode'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/saurfang_vote_appV2_tools.HttpCode'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/saurfang_vote_appV2_tools.HttpCode'
+      summary: 更新投票主体
+      tags:
+      - vote
+  /vote/do:
+    post:
+      consumes:
+      - application/json
+      description: 根据用户投票信息执行投票操作
+      parameters:
+      - description: 投票主体ID
+        in: formData
+        name: vote_id
+        type: integer
+      - collectionFormat: csv
+        description: 选项ID
+        in: formData
+        items:
+          type: integer
+        name: opt[]
+        type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/saurfang_vote_appV2_tools.HttpCode'
+            - properties:
+                data:
+                  $ref: '#/definitions/saurfang_vote_appV2_model.Vote'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/saurfang_vote_appV2_tools.HttpCode'
+            - properties:
+                data:
+                  $ref: '#/definitions/saurfang_vote_appV2_model.Vote'
+              type: object
+      summary: 投票
+      tags:
+      - vote
+  /votes:
+    get:
+      consumes:
+      - application/json
+      description: 获取投票列表
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/saurfang_vote_appV2_tools.HttpCode'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/saurfang_vote_appV2_model.Vote'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/saurfang_vote_appV2_tools.HttpCode'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/saurfang_vote_appV2_model.Vote'
+                  type: array
+              type: object
+      summary: 获取投票列表
+      tags:
+      - vote
+swagger: "2.0"

@@ -3,7 +3,8 @@ package model
 import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/jinzhu/gorm"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 var GlobalConn *gorm.DB
@@ -11,17 +12,17 @@ var GlobalConn *gorm.DB
 func New() {
 	//parseTime=True&loc=Local MySQL 默认时间是格林尼治时间，与我们差八小时，需要定位到我们当地时间
 	my := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local", "root", "root", "127.0.0.1:3306", "vote")
-	conn, err := gorm.Open("mysql", my)
+	conn, err := gorm.Open(mysql.Open(my), &gorm.Config{})
 	if err != nil {
 		fmt.Printf("err:%s\n", err)
 		panic(err)
 	}
 	GlobalConn = conn
-	GlobalConn.AutoMigrate(&Vote{}, &VoteOpt{})
 }
 
 func Close() {
-	_ = GlobalConn.Close()
+	db, _ := GlobalConn.DB()
+	_ = db.Close()
 }
 
 //建表语句
@@ -42,6 +43,7 @@ func Close() {
 //`name` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
 //`created_time` datetime DEFAULT NULL,
 //`percent` int DEFAULT NULL,
+//`deleted` tinyint DEFAULT '0' COMMENT '删除标志位',
 //PRIMARY KEY (`id`),
 //KEY `vote_id` (`vote_id`)
 //) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
@@ -63,6 +65,6 @@ func Close() {
 //`count` int DEFAULT NULL,
 //`created_time` datetime DEFAULT NULL,
 //`during` int DEFAULT NULL,
-//PRIMARY KEY (`id`),
-//CONSTRAINT `id` FOREIGN KEY (`id`) REFERENCES `vote_opt` (`vote_id`)
+//`deleted` tinyint DEFAULT '0' COMMENT '1为删除',
+//PRIMARY KEY (`id`)
 //) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;

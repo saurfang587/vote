@@ -16,4 +16,8 @@
 2. 改造了验签中间件，使其能够更好的支持接口。
 3. 将MySQL操作改造为原生SQL语句。
 4. 增加了一些增删改查的操作。
+5. 引入swagger生成接口文档 [swaggo/swag](https://github.com/swaggo/swag/blob/master/README_zh-CN.md)。
+6. 将Gorm升级至新版本。
+7. 引入JWT。
+8. 接口测试使用APIFOX，不要用POSTMAN
 
