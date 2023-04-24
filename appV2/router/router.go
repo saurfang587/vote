@@ -32,8 +32,8 @@ func New() *gin.Engine {
 
 		//选项
 		vote.GET("/opts/:vote_id", logic.GetOpts)
-		vote.POST("/opt/:id", logic.AddOpt)
-		vote.PUT("/opt/:id", logic.AddVoteBasic)
+		vote.POST("/opt", logic.AddOpt)
+		vote.PUT("/opt", logic.PutOpt)
 		vote.DELETE("/opt/:id", logic.DeleteOpt)
 
 	}

@@ -49,13 +49,37 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/saurfang_vote_appV2_tools.HttpCode"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/saurfang_vote_appV2_tools.HttpCode"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/logic.Token"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/saurfang_vote_appV2_tools.HttpCode"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/saurfang_vote_appV2_tools.HttpCode"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/logic.Token"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -85,6 +109,222 @@ const docTemplate = `{
                         "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/saurfang_vote_appV2_tools.HttpCode"
+                        }
+                    }
+                }
+            }
+        },
+        "/opt": {
+            "put": {
+                "description": "更新投票的选项",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "opt"
+                ],
+                "summary": "更新投票选项",
+                "parameters": [
+                    {
+                        "description": "投票主题ID",
+                        "name": "id",
+                        "in": "body",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "投票主题",
+                        "name": "name",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/saurfang_vote_appV2_tools.HttpCode"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/saurfang_vote_appV2_tools.HttpCode"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/saurfang_vote_appV2_tools.HttpCode"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "新增加投票选项",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "opt"
+                ],
+                "summary": "新增投票选项",
+                "parameters": [
+                    {
+                        "description": "投票主ID",
+                        "name": "vote_id",
+                        "in": "body",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "选项名称",
+                        "name": "name",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/saurfang_vote_appV2_tools.HttpCode"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/saurfang_vote_appV2_tools.HttpCode"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/saurfang_vote_appV2_tools.HttpCode"
+                        }
+                    }
+                }
+            }
+        },
+        "/opt/:id": {
+            "delete": {
+                "description": "根据ID删除选项",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "opt"
+                ],
+                "summary": "删除投票选项",
+                "parameters": [
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "description": "int valid",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/saurfang_vote_appV2_tools.HttpCode"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/saurfang_vote_appV2_tools.HttpCode"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/saurfang_vote_appV2_tools.HttpCode"
+                        }
+                    }
+                }
+            }
+        },
+        "/opts/{vote_id}": {
+            "get": {
+                "description": "获取投票列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "opt"
+                ],
+                "summary": "获取投票列表",
+                "parameters": [
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "description": "int valid",
+                        "name": "vote_id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/saurfang_vote_appV2_tools.HttpCode"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/saurfang_vote_appV2_model.VoteOpt"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/saurfang_vote_appV2_tools.HttpCode"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/saurfang_vote_appV2_model.VoteOpt"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -506,6 +746,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "logic.Token": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "refresh_token": {
+                    "type": "string"
+                }
+            }
+        },
         "saurfang_vote_appV2_model.Vote": {
             "type": "object",
             "properties": {

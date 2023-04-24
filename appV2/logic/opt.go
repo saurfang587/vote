@@ -17,7 +17,7 @@ import (
 //	@Tags			opt
 //	@Accept			json
 //	@Produce		json
-//	@Param			vote_id			path		int	false	"int valid"	minimum(1)
+//	@Param			vote_id	path		int	false	"int valid"	minimum(1)
 //	@response		200,500	{object}	tools.HttpCode{data=[]model.VoteOpt}
 //	@Router			/opts/{vote_id} [get]
 func GetOpts(c *gin.Context) {
@@ -41,15 +41,15 @@ func GetOpts(c *gin.Context) {
 
 // AddOpt godoc
 //
-//	@Summary		新增投票主体
-//	@Description	新增加投票的主体
-//	@Tags			vote
+//	@Summary		新增投票选项
+//	@Description	新增加投票选项
+//	@Tags			opt
 //	@Accept			json
 //	@Produce		json
-//	@Param			vote_id		body		int	false	"投票主ID"
-//	@Param			name	body		string		false	"选项名称"
+//	@Param			vote_id		body		int		false	"投票主ID"
+//	@Param			name		body		string	false	"选项名称"
 //	@response		200,400,500	{object}	tools.HttpCode
-//	@Router			/opt/{:id} [post]
+//	@Router			/opt [post]
 func AddOpt(c *gin.Context) {
 	opt := &model.VoteOpt{}
 	if err := c.ShouldBind(&opt); err != nil {
@@ -83,15 +83,15 @@ func AddOpt(c *gin.Context) {
 
 // PutOpt godoc
 //
-//	@Summary		更新投票主体
-//	@Description	更新投票的主体
-//	@Tags			vote
+//	@Summary		更新投票选项
+//	@Description	更新投票的选项
+//	@Tags			opt
 //	@Accept			json
 //	@Produce		json
 //	@Param			id			body		int		false	"投票主题ID"
-//	@Param			name	body		string		false	"投票主题"
+//	@Param			name		body		string	false	"投票主题"
 //	@response		200,400,500	{object}	tools.HttpCode
-//	@Router			/vote/basic [put]
+//	@Router			/opt [put]
 func PutOpt(c *gin.Context) {
 	opt := &model.VoteOpt{}
 	if err := c.ShouldBind(&opt); err != nil || opt.Id <= 0 {
